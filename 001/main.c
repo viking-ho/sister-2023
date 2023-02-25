@@ -5,10 +5,7 @@
 static char in[M_SIZE][M_SIZE];
 #define IN(x, y)    in[M_SIZE-(y+3)-1][x+3]
 
-static char out[M_SIZE][M_SIZE];
-#define OUT(x, y)   if (out[M_SIZE-(y+3)-1][x+3]) {printf(",\"(%d,%d)\"", x, y);}
-
-#define COPY(dst, src) memcpy(dst, src, sizeof(int)*M_SIZE*M_SIZE)
+#define COPY(dst, src) memcpy(dst, src, sizeof(char)*M_SIZE*M_SIZE)
 #define SWAP(a,b) {char c=a;a=b;b=c;}
 
 
@@ -48,8 +45,10 @@ static void input(int argc, char* argv[])
     }
 }
 
-static void output(char* msg)
+static void output(char out[][M_SIZE], char* msg)
 {
+#define OUT(x, y)   if (out[M_SIZE-(y+3)-1][x+3]) {printf(",\"(%d,%d)\"", x, y);}
+
     printf("\"%s\"", msg);
     OUT(0,0);//1
     OUT(1,0);//2
@@ -141,14 +140,16 @@ static void r90_mh(char m[][M_SIZE])
 }
 int main(int argc, char* argv[])
 {
+    char out[M_SIZE][M_SIZE];
+
     input(argc, argv);
-    COPY(out, in);                 output("原圖");
-    COPY(out, in);    r90(out);    output("右轉90度");
-    COPY(out, in);   r180(out);    output("右轉180度");
-    COPY(out, in);   rn90(out);    output("左轉90度");
-    COPY(out, in);     mv(out);    output("垂直鏡射");
-    COPY(out, in);     mh(out);    output("水平鏡射");
-    COPY(out, in); r90_mv(out);    output("90度+垂直");
-    COPY(out, in); r90_mh(out);    output("90度+水平");
+    COPY(out, in);                 output(out, "原圖");
+    COPY(out, in);    r90(out);    output(out, "右轉90度");
+    COPY(out, in);   r180(out);    output(out, "右轉180度");
+    COPY(out, in);   rn90(out);    output(out, "左轉90度");
+    COPY(out, in);     mv(out);    output(out, "垂直鏡射");
+    COPY(out, in);     mh(out);    output(out, "水平鏡射");
+    COPY(out, in); r90_mv(out);    output(out, "90度+垂直");
+    COPY(out, in); r90_mh(out);    output(out, "90度+水平");
     return 0;
 }
