@@ -1,22 +1,22 @@
 #include <stdio.h>
 #include <string.h>
-#define X_SIZE  7
-#define Y_SIZE  7
+#define M_SIZE  7
 
-static char in[Y_SIZE][X_SIZE];
-#define IN(x, y)    in[Y_SIZE-(y+3)-1][x+3]
+static char in[M_SIZE][M_SIZE];
+#define IN(x, y)    in[M_SIZE-(y+3)-1][x+3]
 
-static char out[Y_SIZE][X_SIZE];
-#define OUT(x, y)   if (out[Y_SIZE-(y+3)-1][x+3]) {printf(",\"(%d,%d)\"", x, y);}
+static char out[M_SIZE][M_SIZE];
+#define OUT(x, y)   if (out[M_SIZE-(y+3)-1][x+3]) {printf(",\"(%d,%d)\"", x, y);}
 
-#define COPY(dst, src) memcpy(dst, src, sizeof(int)*X_SIZE*Y_SIZE)
+#define COPY(dst, src) memcpy(dst, src, sizeof(int)*M_SIZE*M_SIZE)
 #define SWAP(a,b) {char c=a;a=b;b=c;}
 
 
-static char tmp[Y_SIZE][X_SIZE];
+static char tmp[M_SIZE][M_SIZE];
 
-static void input(int argc, char* argv[])
+static void test()
 {
+    memset(in, 0, sizeof(in));
     IN(0,1)=1;
     IN(0,2)=1;
     IN(-1,0)=1;
@@ -26,9 +26,31 @@ static void input(int argc, char* argv[])
     IN(1,-1) = 1;
 }
 
+static int input_yx(int*y, int*x)
+{
+    (*y) = (*x) = 100;
+    scanf_s("%d,%d", y, x);
+    if ((*y)<-3 || 3<(*y)) {
+        return 0;
+    }
+    if ((*x)<-3 || 3<(*x)) {
+        return 0;
+    }
+
+    return 1;
+}
+static void input(int argc, char* argv[])
+{
+    int x, y;
+    memset(in, 0, sizeof(in));
+    while (input_yx(&y, &x) != 0) {
+        IN(y,x) = 1;
+    }
+}
+
 static void output(char* msg)
 {
-    printf("%s", msg);
+    printf("\"%s\"", msg);
     OUT(0,0);//1
     OUT(1,0);//2
     OUT(2,0);//3
@@ -65,54 +87,54 @@ static void output(char* msg)
     printf("\n");
 }
 
-static void mh(char m[][X_SIZE])
+static void mh(char m[][M_SIZE])
 {
     int y, x;
 
-    for (y=0; y<Y_SIZE; y++) {
-        for (x=0; x<X_SIZE/2; x++) {
-            SWAP(m[y][x], m[y][X_SIZE-x-1]);
+    for (y=0; y<M_SIZE; y++) {
+        for (x=0; x<M_SIZE/2; x++) {
+            SWAP(m[y][x], m[y][M_SIZE-x-1]);
         }
     }
 }
-static void mv(char m[][X_SIZE])
+static void mv(char m[][M_SIZE])
 {
     int y, x;
 
-    for (y=0; y<Y_SIZE/2; y++) {
-        for (x=0; x<X_SIZE; x++) {
-            SWAP(m[y][x], m[Y_SIZE-y-1][x]);
+    for (y=0; y<M_SIZE/2; y++) {
+        for (x=0; x<M_SIZE; x++) {
+            SWAP(m[y][x], m[M_SIZE-y-1][x]);
         }
     }
 }
-static void r90(char m[][X_SIZE])
+static void r90(char m[][M_SIZE])
 {
     int y, x;
 
     COPY(tmp, m);
-    for (y=0; y<Y_SIZE; y++) {
-        for (x=0; x<X_SIZE; x++) {
-            m[x][X_SIZE-y-1] = tmp[y][x];
+    for (y=0; y<M_SIZE; y++) {
+        for (x=0; x<M_SIZE; x++) {
+            m[x][M_SIZE-y-1] = tmp[y][x];
         }
     }
 }
-static void r180(char m[][X_SIZE])
+static void r180(char m[][M_SIZE])
 {
     r90(m);
     r90(m);
 }
-static void rn90(char m[][X_SIZE])
+static void rn90(char m[][M_SIZE])
 {
     r90(m);
     r90(m);
     r90(m);
 }
-static void r90_mv(char m[][X_SIZE])
+static void r90_mv(char m[][M_SIZE])
 {
     r90(m);
     mv(m);
 }
-static void r90_mh(char m[][X_SIZE])
+static void r90_mh(char m[][M_SIZE])
 {
     r90(m);
     mh(m);
